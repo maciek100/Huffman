@@ -1,23 +1,25 @@
 package huffman;
 
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertTrue;
-
+/**
+ * Implementation of the binary search tree, storing the characters
+ * and their frequencies in the original input <code>String</code>
+ */
 public class Node implements Comparable<Node> {
-
-	private Node left; //child
-	private Node right; //child
+	/** left child */
+	private Node left;
+	/** right child */
+	private Node right;
+	/** stored character */
 	private final char value;
+	/** frequency of this character in the original text */
 	private int frequency;
+	/** parent node */
 	private Node parent;
-	private static Map<Character, Node> leaves = new HashMap<>();
+	/** map of leaves (character -> tree node) */
+	private static final  Map<Character, Node> leaves = new HashMap<>();
 	
 	public Node() {
 		this.value = Character.MIN_VALUE;
@@ -35,21 +37,21 @@ public class Node implements Comparable<Node> {
 	}
 	
 	public Node combine(Node kid) {
-		Node parent = new Node();
+		Node temp = new Node();
 		if (kid == null) {
-			//return this;
-			parent.frequency = this.frequency;
-			parent.left = this;
-			return parent;
+			temp.frequency = this.frequency;
+			temp.left = this;
+			return temp;
 		}
 		
-		parent.frequency = this.frequency + kid.frequency;
-		parent.left = this.frequency >= kid.frequency ? this : kid;
-		parent.right = this.frequency < kid.frequency ? this : kid;
-		this.parent = parent;
-		kid.parent = parent;
-		return parent;
+		temp.frequency = this.frequency + kid.frequency;
+		temp.left = this.frequency >= kid.frequency ? this : kid;
+		temp.right = this.frequency < kid.frequency ? this : kid;
+		this.parent = temp;
+		kid.parent = temp;
+		return temp;
 	}
+
 	public boolean isRoot() {
 		return parent == null;
 	}
@@ -73,7 +75,7 @@ public class Node implements Comparable<Node> {
 	public boolean isLeaf() {
 		return this.left == null && this.right == null;
 	}
-	static public Map<Character, Node> getLeaves() {
+	public static Map<Character, Node> getLeaves() {
 		return leaves;
 	}
 	
@@ -88,8 +90,8 @@ public class Node implements Comparable<Node> {
 				.entrySet().stream()
 				.map(e -> makeLeaf(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
-		PriorityQueue<Node> thing = new PriorityQueue<>(listOfLeaves);
-		return makeTree(thing);		
+		PriorityQueue<Node> priorityQ = new PriorityQueue<>(listOfLeaves);
+		return makeTree(priorityQ);
 	}
 	
 	private static Node makeTree(PriorityQueue<Node> queue) {
@@ -107,8 +109,8 @@ public class Node implements Comparable<Node> {
 			root.right = node;
 			root.frequency = node.getCount();
 			return root;
-		} else
-			return node;
+		}
+		return node;
 	}
 
 	@Override
@@ -117,13 +119,27 @@ public class Node implements Comparable<Node> {
 	}
 
 	@Override
-	public String toString() {
-		return this.isLeaf() ? "Leaf " + this.value : "Inter";
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Node node = (Node) o;
+		return value == node.value &&
+				frequency == node.frequency &&
+				Objects.equals(left, node.left) &&
+				Objects.equals(right, node.right) &&
+				Objects.equals(parent, node.parent);
 	}
 
-	@Test
-	public void testTreeBuilding() {
-		assertTrue("", true);
+	@Override
+	public int hashCode() {
+		return Objects.hash(left, right, value, frequency, parent);
 	}
+
+	@Override
+	public String toString() {
+		return this.isLeaf() ? "Leaf " + this.value : "Internal";
+	}
+
+
 	
 }
