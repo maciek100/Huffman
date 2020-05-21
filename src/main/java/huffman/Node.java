@@ -35,7 +35,13 @@ public class Node implements Comparable<Node> {
 		leaves.put(value, leaf);
 		return leaf;
 	}
-	
+
+	/**
+	 * Given two frequency nodes (<code>this</code> and kid, this method figures out
+	 * how to build a basic tree with them.
+	 * @param kid
+	 * @return
+	 */
 	public Node combine(Node kid) {
 		Node temp = new Node();
 		if (kid == null) {
@@ -73,6 +79,8 @@ public class Node implements Comparable<Node> {
 		return parent.left == this;
 	}
 	public boolean isLeaf() {
+		//TODO : also ... leafs are the ONLY nodes in the tree which have a "real"
+		// (other than Character.MIN_CHAR) value.
 		return this.left == null && this.right == null;
 	}
 	public static Map<Character, Node> getLeaves() {

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class HuffmanTest {
     private static final Logger aLOGGER = Logger.getLogger(HuffmanTest.class.getName());
+
     private static final String INPUT = "Gallia est omnis divisa in partes tres; unam partem incolunt Belgae,"
             + "aliam Aquitani, tertiam qui ipsorum linguā Celtae, nostrā Galli, appellantur.";
 
